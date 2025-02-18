@@ -12,9 +12,11 @@ pipeline{
                 }
             }
         }
-        stage('Build Stage'){
+        stage('Create Docker image'){
             steps{
-            sh "echo Building application"
+              copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
+              echo "creating docker image"
+              sh 'docker build -t localtomcatimg:$BUILD_NUMBER .'
             }
         }
         stage('Package'){
