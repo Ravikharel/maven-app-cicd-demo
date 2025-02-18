@@ -16,6 +16,7 @@ pipeline{
             steps{
               copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
               echo "creating docker image"
+              sh 'whoami'
               sh 'docker build -t localtomcatimg:$BUILD_NUMBER .'
             }
         }
