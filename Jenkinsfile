@@ -1,5 +1,7 @@
 pipeline{
-    agent any
+    agent {
+        label 'slave-node1'
+    }
     environment {
         dockerImage = "suryaraj/devops-evening"
     }
@@ -27,6 +29,11 @@ pipeline{
               echo "creating docker image"
               sh 'whoami'
               sh 'docker build -t $dockerImage:$BUILD_NUMBER .'
+            }
+        }
+        stage('Trivy Scan for Docker Image') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed $dockerImage:$BUILD_NUMBER'
             }
         }
         stage('Push Image'){
