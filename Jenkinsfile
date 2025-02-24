@@ -1,35 +1,17 @@
 pipeline{ 
     agent any 
     stages{ 
-        stage('build'){
-            steps{
-                
-            sh 'echo HEllo world'
-            } 
-        }
-        stage('Unit Test'){
-            steps{
-                
-            sh 'echo Testing'
-            } 
-        }
-        stage('verify'){
-            steps{
-                
-            sh 'echo Building an application '
-            } 
-        }
-        stage('Package'){
-            steps{
-                
-            sh 'echo Packaging the application'
-            } 
-        }
-        stage('deploy'){
-            steps{
-                
-            sh 'echo Deploying the application'
-            } 
+        stage('Build Java application'){ 
+            steps{ 
+                sh 'mvn -f pom.xml clean package'
+            }
+            post{ 
+                success{
+                    echo "Archiving the Artifacts...." 
+                    archiveArtifacts artifacts: '**/*.war', followSymlinks: false
+
+                }
+            }
         }
     }
 }
