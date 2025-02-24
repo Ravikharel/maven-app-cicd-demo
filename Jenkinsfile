@@ -13,7 +13,7 @@ pipeline{
             sh 'echo Testing'
             } 
         }
-        stage('build'){
+        stage('verify'){
             steps{
                 
             sh 'echo Building an application '
