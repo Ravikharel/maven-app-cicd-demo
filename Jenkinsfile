@@ -15,7 +15,7 @@ pipeline{
         }
         stage('Creating the docker image'){ 
             steps{ 
-                copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.Jobname, target: '/',selector : specific(env.BUILDNUMBER)
+                copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: 'Pipeline', selector: lastSuccessful()
                 echo "Creating Docker images"
                 sh "docker image build -t localimage:$BUILDNUMBER ."
             }
