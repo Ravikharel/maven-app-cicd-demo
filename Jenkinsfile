@@ -17,7 +17,7 @@ pipeline{
             steps{ 
                 copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: 'Pipeline', selector: lastSuccessful()
                 echo "Creating Docker images"
-                sh "docker image build -t localimage:$BUILDNUMBER ."
+                sh "docker image build -t localimage:v1 ."
             }
         }
     }
