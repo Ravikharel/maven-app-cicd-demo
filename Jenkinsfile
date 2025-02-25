@@ -18,21 +18,21 @@ pipeline{
                 }
             }
         }
-        // stage('Creating the docker image'){ 
-        //     steps{ 
-        //         copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER) 
-        //         echo "Creating Docker images"
-        //         sh "docker image build -t $dockerImage:$BUILD_NUMBER ."
-        //     }
-        // }
-        // stage('tagging and pushing the images'){ 
-        //     steps{ 
-        //         withDockerRegistry([credentialsId: 'dockerhub-credentials',url : '']){
-        //             sh '''
-        //             docker push $dockerImage:$BUILD_NUMBER 
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Creating the docker image'){ 
+            steps{ 
+                copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER) 
+                echo "Creating Docker images"
+                sh "docker image build -t $dockerImage:$BUILD_NUMBER ."
+            }
+        }
+        stage('tagging and pushing the images'){ 
+            steps{ 
+                withDockerRegistry([credentialsId: 'dockerhub-credentials',url : '']){
+                    sh '''
+                    docker push $dockerImage:$BUILD_NUMBER 
+                    '''
+                }
+            }
+        }
     }
 }
