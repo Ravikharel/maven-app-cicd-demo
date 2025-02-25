@@ -1,5 +1,7 @@
 pipeline{ 
-    agent any 
+    agent{ 
+        label 'vagrant'
+    } 
     environment { 
         dockerImage='ravikharel/jenkins-project'
     }
