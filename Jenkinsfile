@@ -1,42 +1,45 @@
-pipeline{ 
-    agent{ 
+pipeline { 
+    agent { 
         label 'vagrant'
     } 
     environment { 
-        dockerImage='ravikharel/jenkins-project'
+        dockerImage = 'ravikharel/jenkins-project'
     }
-    stages{ 
-        stage('check grp'){ 
-            steps{ 
+    stages { 
+        stage('Check User Groups') { 
+            steps { 
                 sh 'id'
                 sh 'groups'
             }
         }
-        stage('Build Java application'){ 
-            steps{ 
+
+        stage('Build Java Application') { 
+            steps { 
                 sh 'mvn -f pom.xml clean package'
             }
-            post{ 
-                success{
+            post { 
+                success {
                     echo "Archiving the Artifacts...." 
                     archiveArtifacts artifacts: '**/*.war', followSymlinks: false
-
                 }
             }
         }
-        stage('Creating the docker image'){ 
-            steps{ 
-                copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER) 
-                echo "Creating Docker images"
-                sh "docker image build -t $dockerImage:$BUILD_NUMBER ."
+
+        stage('Creating the Docker Image') { 
+            steps { 
+                script {
+                    echo "Creating Docker image"
+                    sh "docker build -t $dockerImage:$BUILD_NUMBER ."
+                }
             }
         }
-        stage('tagging and pushing the images'){ 
-            steps{ 
-                withDockerRegistry([credentialsId: 'dockerhub-credentials',url : '']){
-                    sh '''
-                    docker push $dockerImage:$BUILD_NUMBER 
-                    '''
+
+        stage('Tagging and Pushing the Image') { 
+            steps { 
+                script {
+                    withDockerRegistry([credentialsId: 'dockerhub-credentials']) {
+                        sh "docker push $dockerImage:$BUILD_NUMBER"
+                    }
                 }
             }
         }
