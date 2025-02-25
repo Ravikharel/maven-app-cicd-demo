@@ -6,6 +6,12 @@ pipeline{
         dockerImage='ravikharel/jenkins-project'
     }
     stages{ 
+        stage('check grp'){ 
+            steps{ 
+                sh 'id'
+                sh 'groups'
+            }
+        }
         stage('Build Java application'){ 
             steps{ 
                 sh 'mvn -f pom.xml clean package'
