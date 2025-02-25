@@ -43,5 +43,13 @@ pipeline {
                 }
             }
         }
+        stage('Deploy the project'){ 
+            steps{ 
+                echo " Running the app on staging environment....."
+                sh '''
+                docker run -itd --name tomcatInstanceStaging -p 8082:8080 $dockerImage:$BUILD_NUMBER
+                '''
+            }
+        }
     }
 }
